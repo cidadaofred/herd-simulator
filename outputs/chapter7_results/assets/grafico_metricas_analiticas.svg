@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+<rect width="900" height="500" fill="#ffffff"/>
+<text x="450" y="28" text-anchor="middle" font-family="Arial" font-size="19" font-weight="bold">Desempenho do agente analítico</text>
+<line x1="70" y1="380.0" x2="830" y2="380.0" stroke="#e5e7eb"/>
+<text x="60" y="384.0" text-anchor="end" font-family="Arial" font-size="11">0.0</text>
+<line x1="70" y1="314.0" x2="830" y2="314.0" stroke="#e5e7eb"/>
+<text x="60" y="318.0" text-anchor="end" font-family="Arial" font-size="11">0.2</text>
+<line x1="70" y1="248.0" x2="830" y2="248.0" stroke="#e5e7eb"/>
+<text x="60" y="252.0" text-anchor="end" font-family="Arial" font-size="11">0.4</text>
+<line x1="70" y1="182.0" x2="830" y2="182.0" stroke="#e5e7eb"/>
+<text x="60" y="186.0" text-anchor="end" font-family="Arial" font-size="11">0.6</text>
+<line x1="70" y1="116.0" x2="830" y2="116.0" stroke="#e5e7eb"/>
+<text x="60" y="120.0" text-anchor="end" font-family="Arial" font-size="11">0.8</text>
+<line x1="70" y1="50.0" x2="830" y2="50.0" stroke="#e5e7eb"/>
+<text x="60" y="54.0" text-anchor="end" font-family="Arial" font-size="11">1.0</text>
+<rect x="112.7" y="215.0" width="52" height="165.0" fill="#2563eb"/>
+<text x="138.7" y="210.0" text-anchor="middle" font-family="Arial" font-size="10">0.50</text>
+<rect x="170.7" y="50.0" width="52" height="330.0" fill="#16a34a"/>
+<text x="196.7" y="45.0" text-anchor="middle" font-family="Arial" font-size="10">1.00</text>
+<rect x="228.7" y="160.0" width="52" height="220.0" fill="#f97316"/>
+<text x="254.7" y="155.0" text-anchor="middle" font-family="Arial" font-size="10">0.67</text>
+<text x="196.7" y="405" text-anchor="middle" font-family="Arial" font-size="12">continuacao_exp_1</text>
+<rect x="366.0" y="160.0" width="52" height="220.0" fill="#2563eb"/>
+<text x="392.0" y="155.0" text-anchor="middle" font-family="Arial" font-size="10">0.67</text>
+<rect x="424.0" y="160.0" width="52" height="220.0" fill="#16a34a"/>
+<text x="450.0" y="155.0" text-anchor="middle" font-family="Arial" font-size="10">0.67</text>
+<rect x="482.0" y="160.0" width="52" height="220.0" fill="#f97316"/>
+<text x="508.0" y="155.0" text-anchor="middle" font-family="Arial" font-size="10">0.67</text>
+<text x="450.0" y="405" text-anchor="middle" font-family="Arial" font-size="12">continuacao_exp_2</text>
+<rect x="619.3" y="50.0" width="52" height="330.0" fill="#2563eb"/>
+<text x="645.3" y="45.0" text-anchor="middle" font-family="Arial" font-size="10">1.00</text>
+<rect x="677.3" y="50.0" width="52" height="330.0" fill="#16a34a"/>
+<text x="703.3" y="45.0" text-anchor="middle" font-family="Arial" font-size="10">1.00</text>
+<rect x="735.3" y="50.0" width="52" height="330.0" fill="#f97316"/>
+<text x="761.3" y="45.0" text-anchor="middle" font-family="Arial" font-size="10">1.00</text>
+<text x="703.3" y="405" text-anchor="middle" font-family="Arial" font-size="12">exp_1</text>
+<rect x="260" y="448" width="16" height="16" fill="#2563eb"/>
+<text x="282" y="461" font-family="Arial" font-size="12">Precision</text>
+<rect x="400" y="448" width="16" height="16" fill="#16a34a"/>
+<text x="422" y="461" font-family="Arial" font-size="12">Recall</text>
+<rect x="540" y="448" width="16" height="16" fill="#f97316"/>
+<text x="562" y="461" font-family="Arial" font-size="12">F1</text>
+</svg>

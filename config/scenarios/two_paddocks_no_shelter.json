@@ -1,0 +1,22 @@
+{
+  "environment": {
+    "paddocks": [
+      {"id": "P1", "bbox": [80, 100, 550, 700], "initial_pasture_quality": 0.88, "carrying_capacity": 45, "natural_shadow": 0.00},
+      {"id": "P2", "bbox": [650, 100, 1120, 700], "initial_pasture_quality": 0.62, "carrying_capacity": 45, "natural_shadow": 0.00}
+    ],
+    "water_sources": [
+      {"id": "ACUDE_P2", "paddock_id": "P2", "position": [940, 500], "capacity_liters": 45000, "initial_level_liters": 40000, "evaporation_lph_per_c": 1.6, "minimum_operational_level": 500}
+    ],
+    "shelters": [],
+    "connections": [
+      {"from": "P1", "to": "P2", "distance": 600, "bidirectional": true}
+    ],
+    "liters_per_drinking_frame": 8.0
+  },
+  "behavior_planner": {"initial_home_paddock": "P1"},
+  "social_behavior": {
+    "lots": [
+      {"id": "lote_base", "animal_ids": "1-40", "arrival_day": 1, "preferred_shelter": "P1", "enabled": true}
+    ]
+  }
+}

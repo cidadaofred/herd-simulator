@@ -1,0 +1,6 @@
+pillow
+numpy
+pandas
+matplotlib
+opencv-python
+streamlit>=1.40,<2

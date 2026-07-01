@@ -1,0 +1,34 @@
+{
+  "simulation": {"num_days": 2, "num_bovinos": 45},
+  "campaign": {
+    "enabled": true,
+    "user_id": "demo",
+    "campaign_id": "campanha_principal",
+    "mode": "resume",
+    "start_date": "2026-06-20"
+  },
+  "social_behavior": {
+    "lots": [
+      {"id": "lote_base", "animal_ids": "1-40", "arrival_day": 1, "preferred_shelter": "P1", "enabled": true},
+      {"id": "lote_novo", "animal_ids": "41-45", "arrival_day": 4, "preferred_shelter": "P4", "enabled": true}
+    ]
+  },
+  "nutrition": {
+    "categories": {
+      "novilha": {
+        "count": 15,
+        "daily_intake_target_grams": 7500,
+        "water_hour": 10,
+        "afternoon_start_hour": 13,
+        "cohort_count": 2,
+        "cluster_spread_factor": 0.40
+      }
+    }
+  },
+  "administrative_events": {
+    "enabled": true,
+    "schedule": [
+      {"id": "VENDA_DIA_5", "type": "animal_sale", "day": 5, "hour": 18, "animal_ids": [38, 39, 40]}
+    ]
+  }
+}

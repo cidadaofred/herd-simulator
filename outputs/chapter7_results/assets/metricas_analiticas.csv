@@ -1,0 +1,4 @@
+dataset,frames,tp,fp,fn,precision,recall,f1
+continuacao_exp_1,240,7,7,0,0.5,1.0,0.6667
+continuacao_exp_2,156,2,1,1,0.6667,0.6667,0.6667
+exp_1,120,2,0,0,1.0,1.0,1.0

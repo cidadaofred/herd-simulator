@@ -1,0 +1,25 @@
+{
+  "simulation": {"num_days": 2},
+  "campaign": {
+    "enabled": true,
+    "user_id": "demo",
+    "campaign_id": "ramo_calor_extremo",
+    "mode": "branch",
+    "source_campaign_id": "campanha_principal",
+    "source_checkpoint": "checkpoint_day_000003.json",
+    "start_date": "2026-06-20"
+  },
+  "events": {
+    "enabled": true,
+    "schedule": [
+      {
+        "id": "CALOR_NO_RAMO",
+        "type": "extreme_heat",
+        "day": 4,
+        "hour": 11,
+        "duration_hours": 5,
+        "parameters": {"temperature_c": 40, "wind": "Norte", "water_evaporation_multiplier": 3.5, "refuge_start_hour": 11, "refuge_end_hour": 15}
+      }
+    ]
+  }
+}

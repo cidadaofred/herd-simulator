@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+<rect width="900" height="500" fill="#ffffff"/>
+<text x="450" y="26" text-anchor="middle" font-family="Arial" font-size="19" font-weight="bold">Qualidade média das pastagens por cenário</text>
+<line x1="70" y1="405.0" x2="830" y2="405.0" stroke="#e5e7eb"/>
+<text x="60" y="409.0" text-anchor="end" font-family="Arial" font-size="11">0.00</text>
+<line x1="70" y1="333.0" x2="830" y2="333.0" stroke="#e5e7eb"/>
+<text x="60" y="337.0" text-anchor="end" font-family="Arial" font-size="11">0.16</text>
+<line x1="70" y1="261.0" x2="830" y2="261.0" stroke="#e5e7eb"/>
+<text x="60" y="265.0" text-anchor="end" font-family="Arial" font-size="11">0.32</text>
+<line x1="70" y1="189.0" x2="830" y2="189.0" stroke="#e5e7eb"/>
+<text x="60" y="193.0" text-anchor="end" font-family="Arial" font-size="11">0.48</text>
+<line x1="70" y1="117.0" x2="830" y2="117.0" stroke="#e5e7eb"/>
+<text x="60" y="121.0" text-anchor="end" font-family="Arial" font-size="11">0.64</text>
+<line x1="70" y1="45.0" x2="830" y2="45.0" stroke="#e5e7eb"/>
+<text x="60" y="49.0" text-anchor="end" font-family="Arial" font-size="11">0.80</text>
+<text x="70.0" y="425" text-anchor="middle" font-family="Arial" font-size="11">0</text>
+<text x="222.0" y="425" text-anchor="middle" font-family="Arial" font-size="11">4</text>
+<text x="374.0" y="425" text-anchor="middle" font-family="Arial" font-size="11">8</text>
+<text x="526.0" y="425" text-anchor="middle" font-family="Arial" font-size="11">12</text>
+<text x="678.0" y="425" text-anchor="middle" font-family="Arial" font-size="11">16</text>
+<text x="830.0" y="425" text-anchor="middle" font-family="Arial" font-size="11">20</text>
+<line x1="70" y1="45" x2="70" y2="405" stroke="#111827"/>
+<line x1="70" y1="405" x2="830" y2="405" stroke="#111827"/>
+<text x="450" y="455" text-anchor="middle" font-family="Arial" font-size="13">Dia da campanha</text>
+<text x="18" y="230" text-anchor="middle" transform="rotate(-90 18 230)" font-family="Arial" font-size="13">Qualidade média (0–1)</text>
+<polyline fill="none" stroke="#2563eb" stroke-width="3" points="70.0,95.6 108.0,101.4 146.0,107.2 184.0,113.2 222.0,119.2 260.0,125.1 298.0,131.1 336.0,132.9 374.0,138.3 412.0,143.8 450.0,149.0"/>
+<line x1="90" y1="478" x2="114" y2="478" stroke="#2563eb" stroke-width="3"/>
+<text x="120" y="482" font-family="Arial" font-size="12">Cenário-base (40 animais)</text>
+<polyline fill="none" stroke="#dc2626" stroke-width="3" points="450.0,149.0 488.0,166.9 526.0,186.0 564.0,202.5 602.0,217.0 640.0,226.7 678.0,240.0 716.0,252.9 754.0,269.0 792.0,279.6 830.0,293.7"/>
+<line x1="310" y1="478" x2="334" y2="478" stroke="#dc2626" stroke-width="3"/>
+<text x="340" y="482" font-family="Arial" font-size="12">Expansão para 100 animais</text>
+<polyline fill="none" stroke="#16a34a" stroke-width="3" stroke-dasharray="8 5" points="450.0,149.0 488.0,145.0 526.0,141.2 564.0,137.6"/>
+<line x1="530" y1="478" x2="554" y2="478" stroke="#16a34a" stroke-width="3" stroke-dasharray="8 5"/>
+<text x="560" y="482" font-family="Arial" font-size="12">Redução para 10 animais</text>
+</svg>

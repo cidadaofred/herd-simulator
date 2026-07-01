@@ -1,0 +1,70 @@
+{
+  "_description": "Parâmetros do agente analítico temporal. O agente usa somente observações sanitizadas; ground truth é reservado ao avaliador.",
+  "stationary": {
+    "_description": "Candidato a animal caído exige imobilidade contínua mais longa que o repouso normal; seis frames preservam os eventos simulados de seis horas.",
+    "window_frames": 6,
+    "maximum_span_px": 12.0,
+    "minimum_isolation_px": 45.0,
+    "minimum_confidence": 0.55
+  },
+  "missing": {
+    "persistence_frames": 4,
+    "minimum_observed_herd_ratio": 0.60,
+    "analysis_start_hour": 9,
+    "analysis_end_hour": 17,
+    "minimum_confidence": 0.55
+  },
+  "population_adaptation": {
+    "_description": "Estima mudanças persistentes na população somente pelos tracks visuais, sem inferir venda, entrada, desaparecimento ou qualquer causa administrativa.",
+    "minimum_detection_confidence": 0.55,
+    "new_track_confirmation_frames": 2,
+    "retirement_observed_absence_frames": 6,
+    "adaptation_start_hour": 9,
+    "adaptation_end_hour": 17
+  },
+  "death": {
+    "_description": "Confirma morte por imobilidade prolongada combinada com mudança de aparência extraída dos pixels observáveis.",
+    "enabled": true,
+    "history_frames": 72,
+    "minimum_stationary_frames": 48,
+    "minimum_observed_frames": 34,
+    "maximum_position_span_px": 14.0,
+    "appearance_baseline_samples": 6,
+    "appearance_recent_samples": 3,
+    "minimum_color_change_rgb": 28.0,
+    "minimum_confidence": 0.70
+  },
+  "parturition": {
+    "_description": "Detecta parição pela sequência: mãe lenta e isolada, surgimento de novo track e proximidade persistente entre ambos.",
+    "enabled": true,
+    "minimum_prior_frames": 12,
+    "prepartum_window_frames": 4,
+    "maximum_mother_step_px": 40.0,
+    "minimum_isolation_px": 20.0,
+    "new_track_window_frames": 4,
+    "maximum_calf_distance_px": 20.0,
+    "minimum_persistence_frames": 3,
+    "minimum_confidence": 0.53
+  },
+  "alerts": {
+    "_description": "Agrupa predições próximas do mesmo animal e tipo em um único episódio de alerta.",
+    "merge_gap_frames": 1,
+    "merge_gap_frames_by_type": {
+      "animal_fallen": 18,
+      "animal_missing": 12,
+      "animal_death": 12,
+      "animal_parturition": 4
+    },
+    "priorities": {
+      "animal_fallen": "critical",
+      "animal_missing": "critical",
+      "animal_death": "critical",
+      "animal_parturition": "attention"
+    }
+  },
+  "evaluation": {
+    "enabled": true,
+    "_description": "Compara alertas e ocorrências por episódio, sem expor o ground truth ao motor analítico.",
+    "matching_tolerance_frames": 0
+  }
+}

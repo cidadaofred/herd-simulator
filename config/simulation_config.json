@@ -1,0 +1,469 @@
+{
+  "farm": {
+    "_description": "Define a identidade, localização geográfica e dimensões em pixels do mapa da fazenda.",
+    "name": "Fazenda Digital Twin Pecuaria",
+    "latitude": -31.7719,
+    "longitude": -52.3425,
+    "width": 1200,
+    "height": 800
+  },
+  "environment": {
+    "_description": "Descreve a estrutura física da fazenda e os recursos que podem ser utilizados pelos animais.",
+    "_paddocks_description": "Cada potreiro informa ID, limites [x1,y1,x2,y2], qualidade inicial do pasto, capacidade e proporção de sombra natural.",
+    "paddocks": [
+      {"description": "Potreiro inicial com abrigo e pastagem de alta qualidade.", "id": "P1", "bbox": [60, 80, 560, 360], "initial_pasture_quality": 0.95, "carrying_capacity": 40, "natural_shadow": 0.10},
+      {"description": "Potreiro que contém a fonte de água principal.", "id": "P2", "bbox": [640, 80, 1140, 360], "initial_pasture_quality": 0.70, "carrying_capacity": 40, "natural_shadow": 0.00},
+      {"description": "Potreiro inicialmente degradado, disponível para recuperação ao longo da campanha.", "id": "P3", "bbox": [60, 430, 560, 720], "initial_pasture_quality": 0.35, "carrying_capacity": 40, "natural_shadow": 0.00},
+      {"description": "Potreiro alternativo com abrigo e sombra natural.", "id": "P4", "bbox": [640, 430, 1140, 720], "initial_pasture_quality": 0.75, "carrying_capacity": 40, "natural_shadow": 0.12}
+    ],
+    "_water_sources_description": "Configura açudes ou bebedouros, incluindo posição, capacidade, nível inicial, evaporação e nível mínimo utilizável.",
+    "water_sources": [
+      {"description": "Açude principal localizado no potreiro P2.", "id": "ACUDE_P2", "paddock_id": "P2", "position": [1000, 280], "capacity_liters": 50000, "initial_level_liters": 42000, "evaporation_lph_per_c": 1.8, "minimum_operational_level": 500}
+    ],
+    "_shelters_description": "Configura os abrigos existentes, suas posições, dimensões visuais e capacidade máxima de animais.",
+    "shelters": [
+      {"description": "Abrigo principal do lote inicial.", "id": "ABRIGO_P1", "paddock_id": "P1", "position": [165, 305], "capacity_animals": 40, "size": [150, 50]},
+      {"description": "Abrigo alternativo para mudança de pernoite ou adaptação de novos lotes.", "id": "ABRIGO_P4", "paddock_id": "P4", "position": [745, 670], "capacity_animals": 40, "size": [150, 50]}
+    ],
+    "_connections_description": "Define o grafo de circulação entre potreiros. O agente utiliza apenas caminhos conectados e alcançáveis.",
+    "connections": [
+      {"from": "P1", "to": "P2", "distance": 580, "bidirectional": true},
+      {"from": "P1", "to": "P3", "distance": 390, "bidirectional": true},
+      {"from": "P2", "to": "P4", "distance": 390, "bidirectional": true},
+      {"from": "P3", "to": "P4", "distance": 580, "bidirectional": true}
+    ],
+    "liters_per_drinking_frame": 8.0
+  },
+  "rendering": {
+    "_description": "Controla a geração das imagens brutas de drone, imagens processadas e rótulos do detector.",
+    "enabled": true,
+    "raw_format": "JPEG",
+    "jpeg_quality": 90,
+    "camera_jitter_px": 3,
+    "sensor_noise_points": 1800,
+    "blur_radius": 0.35,
+    "texture_density": 0.018,
+    "show_zone_labels_in_processed": true,
+    "occlusion": {
+      "_description": "Controla a visibilidade aérea sob telhados. Corpos totalmente cobertos não são renderizados; corpos nas bordas são recortados e têm menor chance e confiança de detecção.",
+      "enabled": true,
+      "full_shelter_occlusion": true,
+      "partial_shelter_occlusion": true,
+      "partial_confidence_penalty_max": 0.35,
+      "partial_miss_probability_max": 0.20
+    },
+    "animal_size_px": {
+      "_description": "Largura e altura aproximadas, em pixels, usadas para desenhar cada categoria animal.",
+      "terneiro": [13, 7],
+      "novilha": [16, 8],
+      "vaca_adulta": [19, 10],
+      "vaca_lactante": [20, 11]
+    },
+    "coat_colors": [
+      [235, 235, 220],
+      [65, 45, 35],
+      [165, 118, 75],
+      [35, 32, 28],
+      [210, 190, 160]
+    ],
+    "detection": {
+      "_description": "Simula imperfeições do pré-processamento e da detecção, como perdas, deslocamento e confiança.",
+      "enabled": true,
+      "miss_probability": 0.025,
+      "localization_jitter_px": 2,
+      "confidence_min": 0.82,
+      "confidence_max": 0.99
+    }
+  },
+  "simulation": {
+    "_description": "Define a duração do segmento atual, tamanho máximo do inventário, horários capturados e semente aleatória.",
+    "num_days": 10,
+    "num_bovinos": 40,
+    "frame_hours": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+    "seed": 42,
+    "agressividade": 0.0
+  },
+  "campaign": {
+    "_description": "Controla campanhas continuáveis. Em resume, num_days representa apenas os próximos dias; em branch, uma nova campanha nasce de um checkpoint existente.",
+    "enabled": false,
+    "user_id": "local",
+    "campaign_id": "fazenda_padrao",
+    "mode": "new",
+    "start_date": "2026-06-20",
+    "checkpoint_every_days": 1,
+    "allow_overwrite": false,
+    "source_campaign_id": null,
+    "source_checkpoint": null
+  },
+  "movement": {
+    "_description": "Define horários comportamentais, velocidades e dispersões espaciais usadas na movimentação diária.",
+    "cold_threshold_c": 10,
+    "cold_release_hour": 9,
+    "normal_release_hour": 7,
+    "water_hour": 11,
+    "rest_start_hour": 12,
+    "rest_end_hour": 14,
+    "return_start_hour": 16,
+    "shelter": {
+      "_description": "Dispersão horizontal e vertical dos animais quando estão dentro ou próximos de um abrigo.",
+      "spread_x": 65,
+      "spread_y": 25
+    },
+    "morning_grazing": {
+      "_description": "Controla a expansão gradual do rebanho durante o pastejo da manhã.",
+      "start_spread": 75,
+      "end_spread": 190
+    },
+    "water": {
+      "_description": "Controla o espalhamento dos animais ao redor da fonte de água.",
+      "spread_x": 45,
+      "spread_y": 85
+    },
+    "rest": {
+      "_description": "Controla agrupamento, pequena movimentação e ruído durante descanso e ruminação.",
+      "spread_x": 100,
+      "spread_y": 35,
+      "movement_rate": 0.12,
+      "jitter_px": 3
+    },
+    "afternoon_grazing": {
+      "_description": "Controla dispersão e velocidade durante o pastejo mais intenso da tarde.",
+      "start_spread": 100,
+      "end_spread": 190,
+      "movement_rate": 0.65
+    },
+    "return": {
+      "_description": "Controla o retorno progressivo e ainda disperso em direção ao local de pernoite.",
+      "spread_x": 190,
+      "spread_y": 90,
+      "movement_rate": 0.72
+    },
+    "end_of_day": {
+      "_description": "Define a fração que entra no abrigo e o comportamento dos animais que permanecem pastando nas proximidades.",
+      "shelter_fraction": 0.45,
+      "near_shelter_spread_x": 145,
+      "near_shelter_spread_y": 60,
+      "near_shelter_movement_rate": 0.70
+    },
+    "default_movement_rate": 0.62,
+    "grazing_jitter_px": 10,
+    "paddock_margin_px": 25
+  },
+  "pasture": {
+    "_description": "Modela consumo, pisoteio, recuperação diária e limites de qualidade que influenciam a escolha de potreiros.",
+    "daily_consumption_rate": 0.08,
+    "daily_recovery_rate": 0.03,
+    "trampling_rate": 0.01,
+    "reference_grazing_hours": 6.0,
+    "reference_intake_grams_per_animal": 9000,
+    "critical_quality": 0.45,
+    "preferred_quality": 0.58,
+    "zone_model": {
+      "_description": "Divide cada potreiro em quatro zonas e permite que os animais procurem áreas mais produtivas.",
+      "initial_quality_offsets": {
+        "_description": "Variação aplicada à qualidade inicial das zonas noroeste, nordeste, sudoeste e sudeste.",
+        "NW": -0.03,
+        "NE": 0.04,
+        "SW": 0.02,
+        "SE": -0.03
+      },
+      "utility_weights": {
+        "_description": "Pesos usados para equilibrar qualidade do pasto, distância e lotação na escolha de uma zona.",
+        "quality": 0.72,
+        "distance": 0.18,
+        "crowding": 0.10
+      },
+      "memory_bonus": 0.025
+    },
+    "behavior_usage_weights": {
+      "_description": "Carga relativa que cada comportamento aplica ao pasto; valores maiores representam mais consumo ou pisoteio.",
+      "abrigo": 0.25,
+      "abrigo_rotina": 0.25,
+      "abrigo_frio": 0.25,
+      "pastejo_manha": 1.0,
+      "busca_agua": 0.20,
+      "descanso_ruminacao": 0.10,
+      "pastejo_tarde": 1.0,
+      "retorno_pastejando": 0.60,
+      "pastejo_proximo_abrigo": 0.60,
+      "pastejo_proximo_pernoite": 0.60,
+      "abrigo_calor": 0.20,
+      "sombra_natural_calor": 0.15,
+      "sombra_natural_frio": 0.15,
+      "sombra_natural_rotina": 0.15,
+      "repouso_sem_abrigo": 0.15,
+        "animal_caido": 0.02,
+        "animal_morto": 0.0,
+        "acompanha_mae": 0.05,
+      "espera_agua_indisponivel": 0.05,
+      "abrigo_fim_dia": 0.25
+    }
+  },
+  "behavior_planner": {
+    "_description": "Seleciona potreiros de pernoite, pastejo e água conforme produtividade, distância e permanência mínima.",
+    "initial_home_paddock": "P1",
+    "minimum_home_stay_days": 3,
+    "switch_score_margin": 0.015,
+    "pasture_weight": 0.65,
+    "shelter_pasture_weight": 0.80,
+    "distance_weight": 0.35,
+    "same_paddock_bonus": 0.12,
+    "home_inertia_bonus": 0.08
+  },
+  "social_behavior": {
+    "_description": "Modela lotes, adaptação de animais recém-chegados, separação temporária e atração entre mães e terneiros.",
+    "integration_days": 6,
+    "separate_shelter_until_familiarity": 0.67,
+    "new_lot_separation_px": 125,
+    "established_lot_separation_px": 28,
+    "mother_attraction": 0.58,
+    "lots": [
+      {
+        "description": "Lote presente desde o primeiro dia da campanha.",
+        "id": "lote_base",
+        "animal_ids": "1-40",
+        "arrival_day": 1,
+        "preferred_shelter": "P1",
+        "enabled": true
+      }
+    ],
+    "future_lot_example": {
+      "description": "Ao aumentar num_bovinos, mova este objeto para lots e ajuste os IDs.",
+      "id": "lote_novo",
+      "animal_ids": "41-50",
+      "arrival_day": 5,
+      "preferred_shelter": "P4",
+      "enabled": false
+    }
+  },
+  "nutrition": {
+    "_description": "Define consumo por bocado, eficiência do pastejo e necessidades específicas de cada categoria.",
+    "bite_grams": 1.0,
+    "base_bites_per_hour": 1650,
+    "minimum_pasture_efficiency": 0.55,
+    "pasture_quality_efficiency": 0.65,
+    "categories": {
+      "terneiro": {
+        "_description": "Configuração nutricional e espacial dos terneiros.",
+        "count": 8,
+        "daily_intake_target_grams": 4500,
+        "water_hour": 11,
+        "afternoon_start_hour": 14,
+        "cohort_count": 1,
+        "cluster_spread_factor": 0.32
+      },
+      "vaca_lactante": {
+        "_description": "Configuração das vacas lactantes, que possuem maior necessidade diária de alimento.",
+        "count": 10,
+        "daily_intake_target_grams": 11000,
+        "water_hour": 12,
+        "afternoon_start_hour": 14,
+        "cohort_count": 2,
+        "cluster_spread_factor": 0.42
+      },
+      "vaca_adulta": {
+        "_description": "Configuração das vacas adultas sem a demanda adicional de lactação.",
+        "count": 12,
+        "daily_intake_target_grams": 9000,
+        "water_hour": 11,
+        "afternoon_start_hour": 13,
+        "cohort_count": 2,
+        "cluster_spread_factor": 0.48
+      },
+      "novilha": {
+        "_description": "Configuração das novilhas e de seus subgrupos sociais.",
+        "count": 10,
+        "daily_intake_target_grams": 7500,
+        "water_hour": 10,
+        "afternoon_start_hour": 13,
+        "cohort_count": 2,
+        "cluster_spread_factor": 0.40
+      }
+    }
+  },
+  "spatial_behavior": {
+    "_description": "Combina comportamento estruturado com formações aleatórias para evitar um rebanho artificialmente uniforme.",
+    "random_mode_probability": 0.50,
+    "eligible_behaviors": [
+      "pastejo_manha",
+      "pastejo_tarde",
+      "descanso_ruminacao"
+    ],
+    "persistence_frames_min": 1,
+    "persistence_frames_max": 2,
+    "_random_mode_weights_description": "Probabilidade relativa de cada formação quando um frame aleatório é escolhido.",
+    "random_mode_weights": {
+      "grupo_compacto": 0.18,
+      "grupo_disperso": 0.24,
+      "subgrupos_distantes": 0.22,
+      "subgrupos_exploradores": 0.22,
+      "individuos_desconexos": 0.14
+    },
+    "formation_parameters": {
+      "_description": "Multiplicadores de dispersão e distância entre coortes para cada formação espacial.",
+      "estruturado": {
+        "spread_multiplier": 1.00,
+        "cohort_shift_multiplier": 1.00
+      },
+      "grupo_compacto": {
+        "spread_multiplier": 0.48,
+        "cohort_shift_multiplier": 0.45
+      },
+      "grupo_disperso": {
+        "spread_multiplier": 1.55,
+        "cohort_shift_multiplier": 1.10
+      },
+      "subgrupos_distantes": {
+        "spread_multiplier": 0.72,
+        "cohort_shift_multiplier": 1.90
+      },
+      "subgrupos_exploradores": {
+        "spread_multiplier": 0.82,
+        "cohort_shift_multiplier": 1.25
+      },
+      "individuos_desconexos": {
+        "spread_multiplier": 1.20,
+        "cohort_shift_multiplier": 1.05
+      },
+      "retorno_disperso": {
+        "spread_multiplier": 1.00,
+        "cohort_shift_multiplier": 1.30
+      },
+      "fim_dia_misto": {
+        "spread_multiplier": 1.00,
+        "cohort_shift_multiplier": 0.85
+      },
+      "fim_dia_campo_aberto": {
+        "spread_multiplier": 2.20,
+        "cohort_shift_multiplier": 1.70
+      }
+    },
+    "exploring_cohorts_min": 1,
+    "exploring_cohorts_max": 2,
+    "isolated_fraction_min": 0.10,
+    "isolated_fraction_max": 0.22,
+    "isolated_margin_px": 35
+  },
+  "weather": {
+    "_description": "Define o clima-base por horário. A variação térmica é sorteada deterministicamente a partir da seed.",
+    "temperature_by_hour": {
+      "_description": "Temperatura-base em graus Celsius para cada horário presente em simulation.frame_hours.",
+      "7": 8,
+      "8": 10,
+      "9": 13,
+      "10": 16,
+      "11": 18,
+      "12": 20,
+      "13": 21,
+      "14": 21,
+      "15": 19,
+      "16": 17,
+      "17": 16,
+      "18": 13
+    },
+    "wind_by_hour": {
+      "_description": "Direção predominante do vento para cada horário capturado.",
+      "7": "Sul",
+      "8": "Sul",
+      "9": "Sudeste",
+      "10": "Leste",
+      "11": "Leste",
+      "12": "Nordeste",
+      "13": "Norte",
+      "14": "Norte",
+      "15": "Noroeste",
+      "16": "Noroeste",
+      "17": "Noroeste",
+      "18": "Sul"
+    },
+    "temperature_variation_c": 1
+  },
+  "events": {
+    "_description": "Agenda ocorrências físicas e climáticas simuladas. Elas são registradas como ground truth, sem produzir alertas.",
+    "enabled": true,
+    "schedule": [
+      {
+        "description": "Reduz a movimentação e isola parcialmente a vaca antes do parto; o terneiro nasce em até quatro frames e passa a acompanhá-la.",
+        "id": "PARTO_DIA_3",
+        "type": "animal_parturition",
+        "day": 3,
+        "hour": 9,
+        "duration_hours": 8,
+        "animal_id": 12,
+        "parameters": {"birth_delay_frames": 3, "postpartum_recovery_frames": 12, "calf_id": 41}
+      },
+      {
+        "description": "Mantém o animal morto no local e inicia mudança visual por decomposição após cinco dias.",
+        "id": "MORTE_DIA_2",
+        "type": "animal_death",
+        "day": 2,
+        "hour": 10,
+        "permanent": true,
+        "animal_id": 25,
+        "parameters": {"decomposition_color_change_day": 5}
+      },
+      {
+        "description": "Eleva a temperatura, aumenta a evaporação e altera a busca por água e abrigo.",
+        "id": "CALOR_DIA_3",
+        "type": "extreme_heat",
+        "day": 3,
+        "hour": 11,
+        "duration_hours": 5,
+        "parameters": {"temperature_c": 39, "wind": "Norte", "water_evaporation_multiplier": 3.0, "refuge_start_hour": 11, "refuge_end_hour": 15}
+      },
+      {
+        "description": "Mantém o animal indicado caído e imóvel durante a duração configurada.",
+        "id": "ANIMAL_CAIDO_DIA_5",
+        "type": "animal_fallen",
+        "day": 5,
+        "hour": 10,
+        "duration_hours": 6,
+        "animal_id": 17,
+        "parameters": {}
+      },
+      {
+        "description": "Atrasa a saída matinal e antecipa o retorno do rebanho ao abrigo.",
+        "id": "FRIO_DIA_7",
+        "type": "extreme_cold",
+        "day": 7,
+        "hour": 7,
+        "duration_hours": 11,
+        "parameters": {"temperature_c": 5, "wind": "Sul", "release_hour": 10, "early_return_hour": 15}
+      },
+      {
+        "description": "Remove permanentemente o animal da cena, mantendo-o no inventário esperado.",
+        "id": "DESAPARECIMENTO_DIA_9",
+        "type": "animal_missing",
+        "day": 9,
+        "hour": 14,
+        "permanent": true,
+        "animal_id": 33,
+        "parameters": {}
+      }
+    ]
+  },
+  "administrative_events": {
+    "_description": "Registra alterações conhecidas do inventário, como entrada, venda ou transferência, sem tratá-las como anomalias.",
+    "enabled": false,
+    "schedule": [],
+    "examples": [
+      {
+        "description": "Exemplo de venda: remove os animais da cena e do inventário esperado na data indicada.",
+        "id": "VENDA_DIA_12",
+        "type": "animal_sale",
+        "day": 12,
+        "hour": 18,
+        "animal_ids": [31, 32, 33]
+      },
+      {
+        "description": "Exemplo de transferência: altera o potreiro preferencial dos animais indicados.",
+        "id": "TRANSFERENCIA_DIA_15",
+        "type": "animal_transfer",
+        "day": 15,
+        "hour": 7,
+        "animal_ids": [21, 22],
+        "target_paddock": "P4"
+      }
+    ]
+  }
+}

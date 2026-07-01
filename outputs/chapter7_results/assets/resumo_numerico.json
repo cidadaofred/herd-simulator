@@ -1,0 +1,40 @@
+{
+  "datasets": [
+    {
+      "dataset": "continuacao_exp_1",
+      "frames": 240,
+      "tp": 7,
+      "fp": 7,
+      "fn": 0,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6667
+    },
+    {
+      "dataset": "continuacao_exp_2",
+      "frames": 156,
+      "tp": 2,
+      "fp": 1,
+      "fn": 1,
+      "precision": 0.6667,
+      "recall": 0.6667,
+      "f1": 0.6667
+    },
+    {
+      "dataset": "exp_1",
+      "frames": 120,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  ],
+  "pasture": {
+    "initial_mean": 0.6875,
+    "base_day_10_mean": 0.5688,
+    "large_day_20_mean": 0.2473,
+    "small_day_13_mean": 0.5943
+  }
+}

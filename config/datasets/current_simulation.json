@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "dataset_id": "current_simulation",
+  "description": "Execução padrão atualmente armazenada em data/.",
+  "source_root": "data",
+  "frame_range": {"start": 1, "end": 120},
+  "paths": {
+    "metadata": "metadata",
+    "processed_images": "generated_frames",
+    "raw_images": "raw_drone_frames",
+    "ground_truth": "occurrence_ground_truth"
+  }
+}

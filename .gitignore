@@ -1,0 +1,15 @@
+# Ambientes e caches Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Saídas locais geradas pelo simulador e pelo agente analítico
+data/
+
+# Pacotes ZIP locais; no módulo web serão armazenados fora do repositório
+artifacts/
+
+# Arquivos temporários
+*.tmp
+*.log

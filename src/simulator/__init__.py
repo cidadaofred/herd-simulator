@@ -1,0 +1,1 @@
+"""Componentes do agente simulador."""

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "dataset_id": "subset_day1",
+  "description": "Primeiro dia para teste",
+  "source_root": "data",
+  "frame_range": {
+    "start": 1,
+    "end": 12
+  },
+  "paths": {
+    "metadata": "metadata",
+    "processed_images": "generated_frames",
+    "raw_images": "raw_drone_frames",
+    "ground_truth": "occurrence_ground_truth"
+  }
+}
