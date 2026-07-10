@@ -69,10 +69,11 @@ with st.sidebar:
     )
     st.info("MVP acadêmico: execuções locais, síncronas e isoladas por campanha.")
 
-studio_tab, analysis_tab, management_tab, analysis_management_tab, method_tab = st.tabs(
+studio_tab, analysis_tab, coordination_tab, management_tab, analysis_management_tab, method_tab = st.tabs(
     [
         "Modo Especialista",
         "Laboratório Analítico",
+        "Auditoria",
         "Gerenciar datasets",
         "Gerenciar análises",
         "Método",
@@ -295,6 +296,23 @@ with analysis_tab:
         st.warning("Nenhum snapshot v2 disponível. Gere uma simulação primeiro.")
     else:
         selected_dataset = st.selectbox("Dataset", snapshots)
+        analysis_models = service.analysis_model_options()
+        selected_analysis_model_id = st.selectbox(
+            "Modelo de analise",
+            [item["id"] for item in analysis_models],
+            format_func=lambda model_id: next(
+                item["label"]
+                for item in analysis_models
+                if item["id"] == model_id
+            ),
+            key="analysis_model_id",
+        )
+        selected_analysis_model = next(
+            item
+            for item in analysis_models
+            if item["id"] == selected_analysis_model_id
+        )
+        st.caption(selected_analysis_model["description"])
         st.caption(
             "A inferência é executada sobre o manifesto observável; a comparação "
             "com o ground truth ocorre somente na etapa de avaliação."
@@ -303,7 +321,10 @@ with analysis_tab:
             try:
                 with st.status("Analisando o dataset...", expanded=True) as status:
                     st.write("Inferência temporal e consolidação dos alertas")
-                    analysis_result = service.run_analysis(selected_dataset)
+                    analysis_result = service.run_analysis(
+                        selected_dataset,
+                        analysis_model_id=selected_analysis_model_id,
+                    )
                     st.write("Avaliação independente contra o ground truth")
                     status.update(label="Análise concluída", state="complete")
                 st.session_state["analysis_result"] = analysis_result
@@ -382,6 +403,167 @@ with analysis_tab:
             "Baixar analysis.zip",
             "download_analysis",
         )
+
+with coordination_tab:
+    st.subheader("Agente coordenador experimental")
+    st.write(
+        "Nesta versao, o coordenador atua em modo experimental pos-avaliacao. "
+        "Ele nao refaz a inferencia visual: audita a analise depois que o "
+        "avaliador externo compara os alertas com o ground truth sintetico ou "
+        "com uma validacao humana posterior."
+    )
+    st.info(
+        "Precision, recall, F1, TP, FP e FN dependem de ground truth. Em um "
+        "ambiente operacional puro, o coordenador usaria sinais proxy como "
+        "cobertura de frames, estabilidade temporal, confianca e necessidade "
+        "de revisao humana."
+    )
+    stored_analyses_for_coordination = service.list_analysis_runs()
+    if not stored_analyses_for_coordination:
+        st.info("Nenhuma analise disponivel. Execute o Laboratorio Analitico primeiro.")
+    else:
+        coordination_datasets = sorted(
+            {item["dataset_id"] for item in stored_analyses_for_coordination}
+        )
+        coordination_dataset = st.selectbox(
+            "Dataset analisado",
+            coordination_datasets,
+            key="coordination_dataset",
+        )
+        coordination_runs = [
+            item
+            for item in stored_analyses_for_coordination
+            if item["dataset_id"] == coordination_dataset
+        ]
+        coordination_run_by_id = {
+            item["run_id"]: item for item in coordination_runs
+        }
+        coordination_run_id = st.selectbox(
+            "Execucao analitica",
+            list(coordination_run_by_id),
+            key="coordination_run",
+        )
+        selected_run = coordination_run_by_id[coordination_run_id]
+        preview_columns = st.columns(4)
+        preview_columns[0].metric(
+            "Precision",
+            "—" if selected_run["precision"] is None else selected_run["precision"],
+        )
+        preview_columns[1].metric(
+            "Recall",
+            "—" if selected_run["recall"] is None else selected_run["recall"],
+        )
+        preview_columns[2].metric(
+            "F1",
+            "—" if selected_run["f1_score"] is None else selected_run["f1_score"],
+        )
+        preview_columns[3].metric(
+            "Alertas",
+            "—" if selected_run["alert_count"] is None else selected_run["alert_count"],
+        )
+
+        if st.button("Executar auditoria", type="primary"):
+            try:
+                with st.status("Validando a analise...", expanded=True) as status:
+                    st.write("Carregando metricas, alertas e manifesto analitico")
+                    coordination_result = service.run_coordination(
+                        coordination_dataset,
+                        coordination_run_id,
+                    )
+                    status.update(
+                        label="Auditoria concluida",
+                        state="complete",
+                    )
+                st.session_state["coordination_result"] = coordination_result
+            except Exception as exc:
+                st.error(f"Nao foi possivel auditar a analise: {exc}")
+
+        coordination_result = st.session_state.get("coordination_result")
+        report_path = None
+        if (
+            coordination_result
+            and coordination_result.dataset_id == coordination_dataset
+            and coordination_result.run_id == coordination_run_id
+        ):
+            report_path = coordination_result.report_path
+        else:
+            candidate = (
+                service.data_root
+                / "analysis_runs"
+                / coordination_dataset
+                / coordination_run_id
+                / "coordination_report.json"
+            )
+            if candidate.is_file():
+                report_path = candidate
+
+        if report_path and report_path.is_file():
+            report = read_json(report_path)
+            decision = report.get("decision")
+            if decision == "approved":
+                st.success(f"Decisao do coordenador: {report['decision_label']}")
+            elif decision == "approved_with_warnings":
+                st.warning(f"Decisao do coordenador: {report['decision_label']}")
+            else:
+                st.error(
+                    f"Decisao do coordenador: {report.get('decision_label', 'Reprovado')}"
+                )
+
+            cols = st.columns(4)
+            observed_metrics = report.get("observed_metrics", {})
+            cols[0].metric("Precision", observed_metrics.get("precision", "—"))
+            cols[1].metric("Recall", observed_metrics.get("recall", "—"))
+            cols[2].metric("F1", observed_metrics.get("f1_score", "—"))
+            cols[3].metric(
+                "Taxa FP",
+                observed_metrics.get("false_positive_rate", "—"),
+            )
+            st.caption(
+                f"Metodo: `{report.get('evaluation_method')}` · "
+                f"modo: `{report.get('coordination_mode')}` · "
+                f"versao: `{report.get('coordination_version')}`"
+            )
+            checks_by_dependency = report.get("checks_by_dependency", {})
+            proxy_checks = checks_by_dependency.get("operational_proxy", [])
+            gt_checks = checks_by_dependency.get("post_evaluation_ground_truth", [])
+            st.markdown("#### Criterios sem ground truth")
+            if proxy_checks:
+                st.dataframe(
+                    pd.DataFrame(proxy_checks),
+                    width="stretch",
+                    hide_index=True,
+                )
+            else:
+                st.caption("Nenhum criterio proxy registrado.")
+
+            st.markdown("#### Criterios pos-validacao")
+            if gt_checks:
+                st.dataframe(
+                    pd.DataFrame(gt_checks),
+                    width="stretch",
+                    hide_index=True,
+                )
+            else:
+                st.caption("Nenhum criterio dependente de ground truth registrado.")
+            gt_dependency = report.get("ground_truth_dependency", {})
+            with st.expander("Dependencia de ground truth"):
+                st.json(gt_dependency)
+            if report.get("warnings"):
+                st.markdown("#### Ressalvas registradas")
+                for warning in report["warnings"]:
+                    st.write(f"- {warning}")
+            with st.expander("Relatorio completo de auditoria"):
+                st.json(report)
+            download_zip(
+                report_path.parent,
+                f"analysis_{coordination_dataset}_{coordination_run_id}",
+                "Baixar analise auditada",
+                "download_coordinated_analysis",
+            )
+        else:
+            st.caption(
+                "Esta analise ainda nao possui relatorio de auditoria."
+            )
 
 with management_tab:
     st.subheader("Gerenciar datasets no servidor")

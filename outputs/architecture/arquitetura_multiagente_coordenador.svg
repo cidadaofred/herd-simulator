@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <style>
+      .title { font: 700 34px Arial, sans-serif; fill: #173b2f; }
+      .subtitle { font: 18px Arial, sans-serif; fill: #4a6258; }
+      .box-title { font: 700 21px Arial, sans-serif; fill: #11382b; }
+      .box-text { font: 16px Arial, sans-serif; fill: #315044; }
+      .small { font: 14px Arial, sans-serif; fill: #52665d; }
+      .agent { fill: #eaf7ef; stroke: #2e7d57; stroke-width: 3; rx: 18; }
+      .data { fill: #eef5ff; stroke: #3a6ea5; stroke-width: 3; rx: 18; }
+      .gate { fill: #fff4e6; stroke: #d9822b; stroke-width: 3; rx: 18; }
+      .out { fill: #f3eefc; stroke: #6f52b5; stroke-width: 3; rx: 18; }
+      .arrow { stroke: #2f4b3f; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .dashed { stroke-dasharray: 8 7; }
+    </style>
+    <marker id="arrowhead" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto">
+      <polygon points="0 0, 11 4, 0 8" fill="#2f4b3f"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="720" fill="#fbfdfb"/>
+  <text x="70" y="65" class="title">Farm Monitoring AI - arquitetura multiagente com coordenador</text>
+  <text x="70" y="96" class="subtitle">Execucao sequencial, agentes especializados e comunicacao indireta por datasets e relatorios auditaveis.</text>
+
+  <rect x="70" y="160" width="230" height="150" class="agent"/>
+  <text x="95" y="203" class="box-title">Agente simulador</text>
+  <text x="95" y="236" class="box-text">Gera ambiente, clima,</text>
+  <text x="95" y="260" class="box-text">movimento do rebanho,</text>
+  <text x="95" y="284" class="box-text">eventos e pastagem.</text>
+
+  <rect x="365" y="160" width="230" height="150" class="data"/>
+  <text x="390" y="203" class="box-title">Dataset sintético</text>
+  <text x="390" y="236" class="box-text">Imagens, metadados,</text>
+  <text x="390" y="260" class="box-text">observacoes visiveis</text>
+  <text x="390" y="284" class="box-text">e ground truth privado.</text>
+
+  <rect x="660" y="160" width="230" height="150" class="agent"/>
+  <text x="685" y="203" class="box-title">Agente analítico</text>
+  <text x="685" y="236" class="box-text">Analisa observacoes,</text>
+  <text x="685" y="260" class="box-text">gera predicoes,</text>
+  <text x="685" y="284" class="box-text">alertas e narrativas.</text>
+
+  <rect x="955" y="160" width="230" height="150" class="data"/>
+  <text x="980" y="203" class="box-title">Avaliador externo</text>
+  <text x="980" y="236" class="box-text">Compara alertas com</text>
+  <text x="980" y="260" class="box-text">ground truth e calcula</text>
+  <text x="980" y="284" class="box-text">precision, recall e F1.</text>
+
+  <rect x="390" y="435" width="265" height="165" class="gate"/>
+  <text x="420" y="480" class="box-title">Agente coordenador</text>
+  <text x="420" y="514" class="box-text">Modo experimental:</text>
+  <text x="420" y="538" class="box-text">quality gate com</text>
+  <text x="420" y="562" class="box-text">métricas pós-validação.</text>
+
+  <rect x="735" y="435" width="265" height="165" class="out"/>
+  <text x="765" y="480" class="box-title">Resultado governado</text>
+  <text x="765" y="514" class="box-text">Aprovado, aprovado</text>
+  <text x="765" y="538" class="box-text">com ressalvas ou</text>
+  <text x="765" y="562" class="box-text">reprovado.</text>
+
+  <path d="M300 235 L365 235" class="arrow"/>
+  <path d="M595 235 L660 235" class="arrow"/>
+  <path d="M890 235 L955 235" class="arrow"/>
+  <path d="M1070 310 C1070 390 640 365 575 435" class="arrow dashed"/>
+  <path d="M480 310 C480 365 500 390 520 435" class="arrow dashed"/>
+  <path d="M655 518 L735 518" class="arrow"/>
+
+  <text x="350" y="360" class="small">comunicacao por artefatos: manifestos, observacoes, alertas, metricas e relatorios JSON</text>
+  <text x="420" y="635" class="small">O coordenador nao altera o resultado bruto: usa ground truth sintetico ou validacao humana posterior para auditoria experimental.</text>
+</svg>

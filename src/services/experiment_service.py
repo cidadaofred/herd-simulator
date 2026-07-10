@@ -18,6 +18,7 @@ from src.analytical.dataset_package import (
     ObservableDatasetPackage,
 )
 from src.analytical.evaluator import Evaluator
+from src.coordinator.coordinator_agent import CoordinatorAgent
 from src.main import PROJECT_ROOT, load_config
 from src.simulator.simulator_agent import SimulatorAgent
 
@@ -125,6 +126,16 @@ class AnalysisDeletionResult:
     reclaimed_bytes: int
 
 
+@dataclass(frozen=True)
+class CoordinationRunResult:
+    dataset_id: str
+    run_id: str
+    analysis_dir: Path
+    report_path: Path
+    decision: str
+    decision_label: str
+
+
 class ExperimentService:
     """Fachada segura para o ciclo simular, empacotar, inferir e avaliar."""
 
@@ -135,6 +146,16 @@ class ExperimentService:
         "animal_missing": "Animal desaparecido",
         "animal_parturition": "Vaca em trabalho de parto",
         "animal_death": "Morte de animal",
+    }
+
+    ANALYSIS_MODELS = {
+        "modelo_regras_estatistico": {
+            "label": "Modelo de regras estatistico",
+            "description": (
+                "Motor atual: regras temporais, limiares estatisticos e "
+                "consistencia de tracks para gerar alertas."
+            ),
+        }
     }
 
     def __init__(self, project_root=PROJECT_ROOT):
@@ -149,6 +170,21 @@ class ExperimentService:
                 f"{field} deve conter apenas letras, números, '_' ou '-'."
             )
         return value
+
+    def analysis_model_options(self):
+        return [
+            {"id": model_id, **values}
+            for model_id, values in self.ANALYSIS_MODELS.items()
+        ]
+
+    def _analysis_run_id(self, model_id):
+        model_id = self._validate_id(model_id, "analysis_model_id")
+        if model_id not in self.ANALYSIS_MODELS:
+            raise ValueError("Modelo de analise nao reconhecido.")
+        return self._validate_id(
+            f"web_{model_id}_{datetime.now():%Y%m%d_%H%M%S}_{uuid.uuid4().hex[:6]}",
+            "run_id",
+        )
 
     @staticmethod
     def _validate_request(request):
@@ -877,15 +913,36 @@ class ExperimentService:
             reclaimed_bytes=scope["total_bytes"],
         )
 
+    def run_coordination(self, dataset_id, run_id):
+        scope = self._analysis_deletion_scope(dataset_id, run_id)
+        coordinator_config_path = self.project_root / "config" / "coordinator_config.json"
+        with open(coordinator_config_path, "r", encoding="utf-8") as file:
+            coordinator_config = json.load(file)
+        report = CoordinatorAgent(scope["run_root"], coordinator_config).run()
+        return CoordinationRunResult(
+            dataset_id=scope["dataset_id"],
+            run_id=scope["run_id"],
+            analysis_dir=scope["run_root"],
+            report_path=scope["run_root"] / CoordinatorAgent.REPORT_NAME,
+            decision=report["decision"],
+            decision_label=report["decision_label"],
+        )
+
     @staticmethod
     def _write_json(path, payload):
         with open(path, "w", encoding="utf-8") as file:
             json.dump(payload, file, indent=2, ensure_ascii=False)
 
-    def run_analysis(self, dataset_id, run_id=None):
+    def run_analysis(self, dataset_id, run_id=None, analysis_model_id=None):
         observable_manifest, evaluation_manifest = self.snapshot_paths(dataset_id)
+        analysis_model_id = analysis_model_id or "modelo_regras_estatistico"
+        analysis_model_id = self._validate_id(
+            analysis_model_id, "analysis_model_id"
+        )
+        if analysis_model_id not in self.ANALYSIS_MODELS:
+            raise ValueError("Modelo de analise nao reconhecido.")
         run_id = self._validate_id(
-            run_id or f"web_{datetime.now():%Y%m%d_%H%M%S}_{uuid.uuid4().hex[:6]}",
+            run_id or self._analysis_run_id(analysis_model_id),
             "run_id",
         )
         analysis_config_path = self.project_root / "config" / "analysis_config.json"
@@ -909,6 +966,10 @@ class ExperimentService:
         self._write_json(evaluation_path, evaluation)
         summary_path = agent.output_dir / "summary.json"
         summary = DatasetPackage.read_json(summary_path)
+        summary["analysis_model"] = {
+            "id": analysis_model_id,
+            **self.ANALYSIS_MODELS[analysis_model_id],
+        }
         summary["evaluation"] = evaluation
         summary["evaluation_status"] = "completed_by_external_evaluator"
         self._write_json(summary_path, summary)

@@ -1,0 +1,34 @@
+{
+  "version": "coordinator_quality_gate_v1",
+  "coordination_mode": "experimental_post_evaluation",
+  "evaluation_method": "rule_based_temporal_quality_gate",
+  "ground_truth_dependency": {
+    "uses_ground_truth_metrics": true,
+    "source": "external_evaluator_after_analytical_agent",
+    "production_equivalent": "human_verified_feedback_or_audited_sample",
+    "note": "Precision, recall, F1, TP, FP e FN dependem de ground truth sintético ou validação humana posterior; não são sinais disponíveis em tempo operacional puro."
+  },
+  "metrics_used": [
+    "precision",
+    "recall",
+    "f1_score",
+    "false_positive_rate",
+    "frame_coverage",
+    "temporal_consistency"
+  ],
+  "quality_gate": {
+    "minimum_precision": 0.7,
+    "minimum_recall": 0.7,
+    "minimum_f1": 0.7,
+    "maximum_false_positive_rate": 0.35,
+    "minimum_frame_coverage": 1.0
+  },
+  "decision_policy": {
+    "approve_with_warnings_if_f1_above": 0.55
+  },
+  "recommended_use": {
+    "approved": "Resultado liberado para consumo humano, relatórios e experimentos posteriores.",
+    "approved_with_warnings": "Resultado utilizável para discussão exploratória, mantendo as ressalvas de qualidade registradas.",
+    "rejected": "Resultado não recomendado como base confiável para decisão ou treinamento sem nova análise."
+  }
+}
